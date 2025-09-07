@@ -3,6 +3,7 @@ from dash import dcc, html, dash_table
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.express as px
+import os
 
 # Column mapping for readability
 col_map = {
@@ -46,8 +47,14 @@ df = pd.read_csv("acft_demo.csv")
 df.rename(columns=col_map, inplace=True)
 df["Test Date"] = pd.to_datetime(df["Test Date"])
 
-# Initialize Dash app
-app = dash.Dash(__name__)
+urlBase = None
+if os.environ.get('AIDE_CONTAINER_URL_BASE'):
+    urlBase = os.environ.get('AIDE_CONTAINER_URL_BASE')
+    app = Dash(__name__, url_base_pathname=urlBase)
+else:
+    # Update this for your local dev environment
+    app = Dash(__name__, requests_pathname_prefix="/project-1-workspace-1/dash-dev/")
+
 server = app.server
 
 # Layout
